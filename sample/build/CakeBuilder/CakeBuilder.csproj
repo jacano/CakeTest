@@ -72,9 +72,6 @@
     <Compile Include="Code.Cake\CodeCakeSpecific\MutableCakeEnvironment.cs" />
     <Compile Include="Code.Cake\CodeCakeSpecific\SecureFiles\RijndaelCrypt.cs" />
     <Compile Include="Code.Cake\CodeCakeSpecific\SecureFiles\SecureFilesAliases.cs" />
-    <Compile Include="Code.Cake\CodeCakeSpecific\Solution\ITemporarySolutionFile.cs" />
-    <Compile Include="Code.Cake\CodeCakeSpecific\Solution\SolutionExtensions.cs" />
-    <Compile Include="Code.Cake\CodeCakeSpecific\Solution\TemporarySolutionFile.cs" />
     <Compile Include="Code.Cake\CodeCakeSpecific\TemporaryFile.cs" />
     <Compile Include="Code.Cake\CodeCakeSpecific\Termination\CakeTerminateException.cs" />
     <Compile Include="Code.Cake\CodeCakeSpecific\Termination\CakeTerminationOption.cs" />
@@ -118,9 +115,9 @@
       <ILRepackPath>@(ILRepackTool->'%(FullPath)')</ILRepackPath>
       <Merger Condition="('$(OS)' == 'Windows_NT')">"$(ILRepackPath)"</Merger>
       <Merger Condition="('$(OS)' != 'Windows_NT')">mono "$(ILRepackPath)"</Merger>
-	  <MAssemblies>@(MergeAssemblies->'%(FullPath)', ' ')</MAssemblies>
+      <MAssemblies>@(MergeAssemblies->'%(FullPath)', ' ')</MAssemblies>
     </PropertyGroup>
-    <Message Text='MERGE COMMAND: $(Merger) /out:"$(OutputAssembly)" $(MAssemblies)' Importance="High" />
-    <Exec Command='$(Merger) /out:"$(OutputAssembly)" $(MAssemblies)' />
+    <Message Text="MERGE COMMAND: $(Merger) /out:&quot;$(OutputAssembly)&quot; $(MAssemblies)" Importance="High" />
+    <Exec Command="$(Merger) /out:&quot;$(OutputAssembly)&quot; $(MAssemblies)" />
   </Target>
 </Project>

@@ -20,11 +20,12 @@ namespace CakeBuilder
 
         public Build()
         {
-            var configuration = Cake.Argument("configuration", "Release");
-
             var artifactDir = Cake.Directory("artifacts");
             var outputDir = Cake.Directory("output");
             var toolsDir = Cake.Directory("tools");
+
+            var configuration = Cake.Argument("Configuration", "Release");
+            var outputPath = Cake.Argument("OutputPath", outputDir.Path);
 
             Task("Clean").Does(() =>
             {
@@ -58,18 +59,13 @@ namespace CakeBuilder
             .IsDependentOn("RestoreNuGetPackages")
             .Does(() =>
             {
-                Cake.Information("Building all existing .sln files at the root level with '{0}' configuration (excluding this builder application).", configuration);
-                foreach (var sln in Cake.GetFiles("*.sln"))
+                Cake.Information("Building all existing .sln files at the root level with '{0}' configuration", configuration);
+                foreach (var sln in Cake.GetFiles("src/*.sln"))
                 {
-                    using (var tempSln = Cake.CreateTemporarySolutionFile(sln))
-                    {
-                        // Excludes "CodeCakeBuilder" itself from compilation!
-                        tempSln.ExcludeProjectsFromBuild("CakeBuilder");
-                        Cake.MSBuild(tempSln.FullPath, new MSBuildSettings()
-                                .SetConfiguration(configuration)
-                                .SetVerbosity(Verbosity.Minimal)
-                                .SetMaxCpuCount(1));
-                    }
+                    Cake.MSBuild(sln.FullPath, new MSBuildSettings()
+                            .SetConfiguration(configuration)
+                            .SetVerbosity(Verbosity.Minimal)
+                            .SetMaxCpuCount(1));
                 }
             });
 
