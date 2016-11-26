@@ -9,66 +9,72 @@ using Cake.Core.Diagnostics;
 
 using CodeCake;
 using Cake.Common.Solution;
+using Cake.Core.IO;
 
 namespace CakeBuilder
 {
-    //[AddPath("CakeBuilder/Tools")]
+    //[AddPath("tools")]
     public class Build : CodeCakeHost
     {
+        private const string NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
+
         public Build()
         {
             var configuration = Cake.Argument("configuration", "Release");
-            var releasesDir = Cake.Directory("CakeBuilder/Releases");
 
-            Task("Clean")
-                .Does(() =>
-               {
-                    Cake.CleanDirectories(releasesDir);
-               });
+            var artifactDir = Cake.Directory("artifacts");
+            var outputDir = Cake.Directory("output");
+            var toolsDir = Cake.Directory("tools");
 
-            Task("Nuget")
-                .Does(() =>
+            Task("Clean").Does(() =>
+            {
+                Cake.CleanDirectory(artifactDir);
+                Cake.CleanDirectory(outputDir);
+            });
+
+            Task("Nuget").Does(() =>
+            {
+                var nuget = toolsDir + Cake.File("nuget.exe");
+                if (!Cake.FileExists(nuget))
                 {
-                    var nuget = "tools/nuget.exe";
-                    if (!Cake.FileExists(nuget))
-                    {
-                        Cake.CreateDirectory("tools/");
-                        Cake.DownloadFile("https://dist.nuget.org/win-x86-commandline/latest/nuget.exe", nuget);
-                    }
-                });
+                    Cake.CreateDirectory(toolsDir);
+                    Cake.DownloadFile(NugetDownloadUrl, nuget);
+                }
+            });
 
-            Task("Restore-NuGet-Packages")
-                .IsDependentOn("Nuget")
-                .Does(() =>
-               {
-                   Cake.Information("Restoring nuget packages for existing .sln files at the root level.");
-                   foreach (var sln in Cake.GetFiles("*.sln"))
-                   {
-                       Cake.NuGetRestore(sln);
-                   }
-               });
+            Task("RestoreNuGetPackages")
+            .IsDependentOn("Nuget")
+            .Does(() =>
+            {
+                Cake.Information("Restoring nuget packages for existing .sln files.");
+                foreach (var sln in Cake.GetFiles("src/*.sln"))
+                {
+                    Cake.NuGetRestore(sln);
+                }
+            });
 
             Task("Build")
-                .IsDependentOn("Clean")
-                .IsDependentOn("Restore-NuGet-Packages")
-                .Does(() =>
-               {
-                   Cake.Information("Building all existing .sln files at the root level with '{0}' configuration (excluding this builder application).", configuration);
-                   foreach (var sln in Cake.GetFiles("*.sln"))
-                   {
-                       using (var tempSln = Cake.CreateTemporarySolutionFile(sln))
-                       {
-                            // Excludes "CodeCakeBuilder" itself from compilation!
-                            tempSln.ExcludeProjectsFromBuild("CakeBuilder");
-                           Cake.MSBuild(tempSln.FullPath, new MSBuildSettings()
-                                   .SetConfiguration(configuration)
-                                   .SetVerbosity(Verbosity.Minimal)
-                                   .SetMaxCpuCount(1));
-                       }
-                   }
-               });
+            .IsDependentOn("Clean")
+            .IsDependentOn("RestoreNuGetPackages")
+            .Does(() =>
+            {
+                Cake.Information("Building all existing .sln files at the root level with '{0}' configuration (excluding this builder application).", configuration);
+                foreach (var sln in Cake.GetFiles("*.sln"))
+                {
+                    using (var tempSln = Cake.CreateTemporarySolutionFile(sln))
+                    {
+                        // Excludes "CodeCakeBuilder" itself from compilation!
+                        tempSln.ExcludeProjectsFromBuild("CakeBuilder");
+                        Cake.MSBuild(tempSln.FullPath, new MSBuildSettings()
+                                .SetConfiguration(configuration)
+                                .SetVerbosity(Verbosity.Minimal)
+                                .SetMaxCpuCount(1));
+                    }
+                }
+            });
 
-            Task("Default").IsDependentOn("Build");
+            Task("Default")
+            .IsDependentOn("Build");
         }
     }
 }

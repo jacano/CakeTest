@@ -7,7 +7,7 @@ namespace CakeBuilder
     {
         static int Main(string[] args)
         {
-            var app = new CodeCakeApplication();
+            var app = new CodeCakeApplication(Environment.CurrentDirectory);
             var result = app.Run(args);
             Console.WriteLine();
             if (System.Diagnostics.Debugger.IsAttached)
