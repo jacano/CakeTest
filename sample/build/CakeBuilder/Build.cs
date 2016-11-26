@@ -25,7 +25,6 @@ namespace CakeBuilder
             var toolsDir = Cake.Directory("tools");
 
             var configuration = Cake.Argument("Configuration", "Release");
-            var outputPath = Cake.Argument("OutputPath", outputDir.Path);
 
             Task("Clean").Does(() =>
             {
@@ -62,10 +61,14 @@ namespace CakeBuilder
                 Cake.Information("Building all existing .sln files at the root level with '{0}' configuration", configuration);
                 foreach (var sln in Cake.GetFiles("src/*.sln"))
                 {
-                    Cake.MSBuild(sln.FullPath, new MSBuildSettings()
-                            .SetConfiguration(configuration)
-                            .SetVerbosity(Verbosity.Minimal)
-                            .SetMaxCpuCount(1));
+                    var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath;
+
+                    Cake.MSBuild(sln.FullPath,
+                        new MSBuildSettings()
+                        .WithProperty("OutputPath", outputPath)
+                        .SetConfiguration(configuration)
+                        .SetVerbosity(Verbosity.Minimal)
+                        .SetMaxCpuCount(1));
                 }
             });
 

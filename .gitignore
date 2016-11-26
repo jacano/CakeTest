@@ -3,5 +3,6 @@ obj/
 .vs/
 packages/
 tools/
+output/
 
 *.user
