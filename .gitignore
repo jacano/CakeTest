@@ -1,6 +1,6 @@
+.vs/
 bin/
 obj/
-.vs/
 packages/
 tools/
 output/
@@ -8,4 +8,4 @@ AppPackages/
 
 *.user
 *.nuget.targets
-*lock.json
+*.lock.json
