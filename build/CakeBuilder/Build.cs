@@ -6,10 +6,9 @@ using Cake.Common.Diagnostics;
 using Cake.Common.Net;
 using Cake.Core;
 using Cake.Core.Diagnostics;
+using Cake.Core.IO;
 
 using CodeCake;
-using Cake.Common.Solution;
-using Cake.Core.IO;
 
 namespace CakeBuilder
 {
