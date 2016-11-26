@@ -3,9 +3,9 @@ using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.IO.Paths;
 using Cake.Common.Tools.MSBuild;
+using Cake.Common.Tools.XBuild;
 using Cake.Core.IO.Arguments;
 using Cake.Plist;
-using Cake.Xamarin;
 
 namespace CakeBuilder
 {
@@ -36,6 +36,8 @@ namespace CakeBuilder
 
         private void Build(ConvertableFilePath csproj)
         {
+            var configuration = Cake.Argument("Configuration", "Release");
+
             Cake.Information("Building '{0}' with '{1}' configuration", csproj, configuration);
 
             var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath + "/" + csproj.Path.GetFilenameWithoutExtension().FullPath + "_" + buildNumber + "/";
@@ -49,16 +51,10 @@ namespace CakeBuilder
             }
             else
             {
-                Cake.MDToolBuild(csproj, (x) =>
-                {
-                    x.Configuration = configuration;
-                    x.ArgumentCustomization = (args) =>
-                    {
-                        var outputPathMDTool = new TextArgument($"/p:OutputPath=\"{outputPath}\"");
-                        args.Append(outputPathMDTool);
-                        return args;
-                    };
-                });
+                Cake.XBuild(csproj,
+                    new XBuildSettings()
+                    .WithProperty("OutputPath", outputPath)
+                    .SetConfiguration(configuration));
             }
         }
 

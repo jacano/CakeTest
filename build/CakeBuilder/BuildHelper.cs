@@ -21,8 +21,6 @@ namespace CakeBuilder
             build.artifactDir = build.Cake.Directory("artifacts");
             build.outputDir = build.Cake.Directory("output");
             build.toolsDir = build.Cake.Directory("tools");
-
-            build.configuration = build.Cake.Argument("Configuration", "Debug");
         }
 
         public static void UploadToTeamCity(PlatformBuild build)

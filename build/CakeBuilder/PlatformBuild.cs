@@ -9,7 +9,6 @@ namespace CakeBuilder
         public ConvertableDirectoryPath toolsDir;
         public ConvertableDirectoryPath artifactDir;
 
-        public string configuration;
         public string buildNumber;
         public string buildName;
     }

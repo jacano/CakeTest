@@ -3,12 +3,16 @@ using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.IO.Paths;
+using Cake.Common.Tools;
 using Cake.Common.Tools.MSBuild;
+using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Core.IO.Arguments;
-using Cake.Xamarin;
+using Cake.Common.Tools.XBuild;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace CakeBuilder
 {
@@ -39,23 +43,37 @@ namespace CakeBuilder
 
         private void Build(ConvertableFilePath csproj)
         {
+            var configuration = Cake.Argument("Configuration", "Release");
+
             Cake.Information("Building '{0}' with '{1}' configuration", csproj, configuration);
 
             var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath + "/" + csproj.Path.GetFilenameWithoutExtension().FullPath + "_" + buildNumber + "/";
+
+            var target = "SignAndroidPackage";
 
             if (Cake.IsRunningOnWindows())
             {
                 Cake.MSBuild(csproj,
                     new MSBuildSettings()
                     .WithProperty("OutputPath", outputPath)
-                    .SetConfiguration(configuration));
+                    .SetConfiguration(configuration)
+                    .WithTarget(target));
             }
             else
             {
-                Cake.AndroidPackage(csproj, true, (x) =>
-                {
-                    
-                });
+                Cake.XBuild(csproj, 
+                    new XBuildSettings()
+                    .WithProperty("OutputPath", outputPath)
+                    .SetConfiguration(configuration)
+                    .WithTarget(target));
+
+                //var searchPattern = "/**/*-Signed.apk";
+
+                //// Use the globber to find any .apk files within the tree
+                //var t = Cake.Globber
+                //    .GetFiles(searchPattern)
+                //    .OrderBy(f => new FileInfo(f.FullPath).LastWriteTimeUtc)
+                //    .FirstOrDefault();
             }
         }
 

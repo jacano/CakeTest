@@ -5,6 +5,7 @@ using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Common.IO.Paths;
+using Cake.Common;
 
 namespace CakeBuilder
 {
@@ -32,6 +33,8 @@ namespace CakeBuilder
 
         private void Build(ConvertableFilePath csproj)
         {
+            var configuration = Cake.Argument("Configuration", "Release");
+
             Cake.Information("Building '{0}' with '{1}' configuration", csproj, configuration);
 
             var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath + "/" + csproj.Path.GetFilenameWithoutExtension().FullPath + "_" + buildNumber + "/";
