@@ -52,15 +52,31 @@
       <HintPath>..\packages\Cake.Core.0.17.0\lib\net45\Cake.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Cake.HockeyApp, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cake.HockeyApp.0.3.0-pre\lib\net45\Cake.HockeyApp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Cake.Plist">
       <HintPath>Libs\Cake.Plist\Cake.Plist.dll</HintPath>
+    </Reference>
+    <Reference Include="Cake.Xamarin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cake.Xamarin.1.3.0.6\lib\net45\Cake.Xamarin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cake.HockeyApp.0.3.0-pre\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Build.cs" />
+    <Compile Include="BuildHelper.cs" />
+    <Compile Include="PlatformBuild.cs" />
+    <Compile Include="WindowsBuild.cs" />
+    <Compile Include="IOSBuild.cs" />
+    <Compile Include="AndroidBuild.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
