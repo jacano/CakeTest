@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakeBuilder", "CakeBuilder\CakeBuilder.csproj", "{FD4817B6-3CD7-4E74-AA10-7CA95FDFCF2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Code.Cake", "CakeBuilder\Libs\Code.Cake\Code.Cake.csproj", "{91150EEE-EDE0-4626-9D14-193A05654853}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FD4817B6-3CD7-4E74-AA10-7CA95FDFCF2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD4817B6-3CD7-4E74-AA10-7CA95FDFCF2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD4817B6-3CD7-4E74-AA10-7CA95FDFCF2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91150EEE-EDE0-4626-9D14-193A05654853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91150EEE-EDE0-4626-9D14-193A05654853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91150EEE-EDE0-4626-9D14-193A05654853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91150EEE-EDE0-4626-9D14-193A05654853}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

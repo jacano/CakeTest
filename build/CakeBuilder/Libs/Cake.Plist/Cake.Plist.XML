@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Cake.Plist</name>
+    </assembly>
+    <members>
+        <member name="T:Cake.Plist.PlistAliases">
+            <summary>
+                Contains functionality to work with plist files.
+            </summary>
+        </member>
+        <member name="M:Cake.Plist.PlistAliases.DeserializePlistXml(Cake.Core.ICakeContext,System.String)">
+            <summary>
+                Desierializes plist from xml
+            </summary>
+            <param name="context"></param>
+            <param name="xml">plist xml</param>
+            <returns>deserialized plist as dynamic</returns>
+        </member>
+        <member name="M:Cake.Plist.PlistAliases.DeserializePlist(Cake.Core.ICakeContext,Cake.Core.IO.FilePath)">
+            <summary>
+                Deserializes a plist from file
+            </summary>
+            <param name="context"></param>
+            <param name="file">xml plist file</param>
+            <returns>deserialized plist as dynamic</returns>
+            <example>
+            <code>
+            var plist = File("./src/Demo/Info.plist");
+            dynamic data = DeserializePlist(plist);
+            
+            data["CFBundleShortVersionString"] = version.AssemblySemVer;
+            data["CFBundleVersion"] = version.FullSemVer;
+            
+            SerializePlist(plist, data);
+            </code>
+            Deserialize the plist and simply access properties via indexer. But, it is important to declare data as dynamic.
+            </example>
+        </member>
+        <member name="M:Cake.Plist.PlistAliases.SerializePlist(Cake.Core.ICakeContext,Cake.Core.IO.FilePath,System.Object)">
+            <summary>
+                Serializes a plist into spezified file.
+            </summary>
+            <param name="context"></param>
+            <param name="file">target file</param>
+            <param name="value">plist data</param>
+            <example>
+            <code>
+            var plist = File("./src/Demo/Info.plist");
+            dynamic data = DeserializePlist(plist);
+            
+            data["CFBundleShortVersionString"] = version.AssemblySemVer;
+            data["CFBundleVersion"] = version.FullSemVer;
+            
+            SerializePlist(plist, data);
+            </code>
+            Deserialize the plist and simply access properties via indexer. But, it is important to declare data as dynamic.
+            </example>
+        </member>
+        <member name="M:Cake.Plist.PlistAliases.SerializePlistXml(Cake.Core.ICakeContext,System.Object)">
+            <summary>
+                Serializes plist as xml
+            </summary>
+            <param name="context"></param>
+            <param name="value">plist data</param>
+            <returns>serialized plist xml</returns>
+        </member>
+        <member name="M:Cake.Plist.PlistConvert.Deserialize(System.Xml.Linq.XElement)">
+            <summary>
+            </summary>
+            <param name="element"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
