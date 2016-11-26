@@ -57,12 +57,12 @@ namespace CakeBuilder
             .IsDependentOn("RestoreNuGetPackages")
             .Does(() =>
             {
-                Cake.Information("Building all existing .sln files at the root level with '{0}' configuration", configuration);
-                foreach (var sln in Cake.GetFiles("src/*.sln"))
+                Cake.Information("Building all existing .csproj files with '{0}' configuration", configuration);
+                foreach (var csproj in Cake.GetFiles("src/**/*.csproj"))
                 {
-                    var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath + "\\";
+                    var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath + "/" + csproj.GetFilenameWithoutExtension().FullPath + "/";
 
-                    Cake.MSBuild(sln.FullPath,
+                    Cake.MSBuild(csproj.FullPath,
                         new MSBuildSettings()
                         .WithProperty("OutputPath", outputPath)
                         .SetConfiguration(configuration)
