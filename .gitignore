@@ -4,5 +4,8 @@ obj/
 packages/
 tools/
 output/
+AppPackages/
 
 *.user
+*.nuget.targets
+*lock.json

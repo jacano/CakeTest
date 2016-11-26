@@ -60,7 +60,7 @@ namespace CakeBuilder
                 Cake.Information("Building all existing .sln files at the root level with '{0}' configuration", configuration);
                 foreach (var sln in Cake.GetFiles("src/*.sln"))
                 {
-                    var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath;
+                    var outputPath = outputDir.Path.MakeAbsolute(Cake.Environment).FullPath + "\\";
 
                     Cake.MSBuild(sln.FullPath,
                         new MSBuildSettings()
@@ -68,6 +68,7 @@ namespace CakeBuilder
                         .SetConfiguration(configuration)
                         .SetVerbosity(Verbosity.Minimal)
                         .SetMaxCpuCount(1));
+
                 }
             });
 
