@@ -1,21 +1,19 @@
-﻿using CodeCake;
-using System;
+﻿using System;
 
-namespace CakeBuilder
+namespace FakeBuilder
 {
     class Program
     {
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
-            var app = new CodeCakeApplication(Environment.CurrentDirectory);
-            var result = app.Run(args);
+            var t = new AndroidBuild();
+
             Console.WriteLine();
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 Console.WriteLine("Hit any key to exit.");
                 Console.ReadKey();
             }
-            return result;
         }
     }
 }
