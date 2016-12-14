@@ -71,10 +71,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildHelper.cs" />
-    <Compile Include="PlatformBuild.cs" />
-    <Compile Include="WindowsBuild.cs" />
-    <Compile Include="IOSBuild.cs" />
-    <Compile Include="AndroidBuild.cs" />
+    <Compile Include="Platforms\Base\PlatformBuild.cs" />
+    <Compile Include="Platforms\Windows.cs" />
+    <Compile Include="Platforms\iOS.cs" />
+    <Compile Include="Platforms\Android.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
