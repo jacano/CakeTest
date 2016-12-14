@@ -12,12 +12,13 @@ namespace FakeBuilder
             {
                 Console.WriteLine("Android");
 
+                MSBuildHelper.MSBuildLoggers = (new string[] { }).ToFSharpList();
                 MSBuildHelper.build(Fun<MSBuildHelper.MSBuildParams>(msBuild => {
                     msBuild.Verbosity = MSBuildHelper.MSBuildVerbosity.Detailed.ToFSharpOption();
                     msBuild.NoLogo = true;
                     msBuild.RestorePackagesFlag = true;
                     return msBuild;
-                }), $"a/ScriptingDemos.csproj");
+                }), $"src/App3/App3.csproj");
             }));
         }
     }

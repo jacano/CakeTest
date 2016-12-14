@@ -18,7 +18,7 @@ namespace FakeBuilder
             var targetName = args[1];
 
             var executingAssembly = Assembly.GetExecutingAssembly();
-            var platform = BuildHelper.FindTypes(new[] {executingAssembly},
+            var platform = BuildHelper.FindTypes(new[] { executingAssembly },
                 type =>
                     string.Equals(type.Name, platformName, StringComparison.InvariantCultureIgnoreCase) &&
                     type.IsSubclassOf(typeof(PlatformBuild)))
