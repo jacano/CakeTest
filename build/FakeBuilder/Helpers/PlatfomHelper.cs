@@ -1,33 +1,15 @@
-﻿using System;
+﻿using FakeBuilder.Helpers;
+using Microsoft.FSharp.Core;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace FakeBuilder
 {
-    public static class BuildHelper
+    public static class PlatfomHelper
     {
-        private const string NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
-
-        public static void InitCommon(PlatformBuild build)
-        {
-        }
-
-        public static void UploadToTeamCity(PlatformBuild build)
-        {
-        }
-
-        public static void GenerateArtifactsAndMove(PlatformBuild build)
-        {
-        }
-
-        public static void Clear(PlatformBuild build)
-        {
-        }
-
-        private static void DownloadNuget(PlatformBuild build)
-        {
-        }
-
         public static IEnumerable<Type> FindTypes(IEnumerable<Assembly> assemblies, Func<Type, bool> predicate)
         {
             if (assemblies == null)
@@ -60,6 +42,17 @@ namespace FakeBuilder
                     }
                 }
             }
+        }
+
+        public static Type GetPlatformType(string platformName)
+        {
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var platform = PlatfomHelper.FindTypes(new[] { executingAssembly },
+                type =>
+                    string.Equals(type.Name, platformName, StringComparison.InvariantCultureIgnoreCase) &&
+                    type.IsSubclassOf(typeof(PlatformBase)))
+                    .FirstOrDefault();
+            return platform;
         }
     }
 }

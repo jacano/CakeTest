@@ -5,7 +5,7 @@ using System;
 
 namespace FakeBuilder
 {
-    public class iOS : PlatformBuild
+    public class iOS : PlatformBase
     {
         public iOS()
         {

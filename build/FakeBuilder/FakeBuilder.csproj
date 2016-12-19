@@ -41,8 +41,8 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeLib, Version=4.46.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FAKE.Lib.4.46.1\lib\net451\FakeLib.dll</HintPath>
+    <Reference Include="FakeLib, Version=4.47.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FAKE.Lib.4.47.0\lib\net451\FakeLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Control.AsyncSeq, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -65,14 +65,19 @@
       <HintPath>..\packages\FSharpx.Extras.2.2.0\lib\net45\FSharpx.Extras.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildHelper.cs" />
-    <Compile Include="Platforms\Base\PlatformBuild.cs" />
+    <Compile Include="Helpers\PlatfomHelper.cs" />
+    <Compile Include="Helpers\FSharpHelper.cs" />
+    <Compile Include="Platforms\Base\PlatformBase.cs" />
     <Compile Include="Platforms\Windows.cs" />
     <Compile Include="Platforms\iOS.cs" />
     <Compile Include="Platforms\Android.cs" />
@@ -93,9 +98,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\GitInfo.1.1.37\build\GitInfo.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitInfo.1.1.37\build\GitInfo.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.28.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.3\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\dotnet\Fody.targets'))" />
   </Target>
-  <Import Project="..\packages\Fody.1.28.3\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.3\build\Fody.targets')" />
   <UsingTask TaskName="CosturaCleanup" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
     <ParameterGroup>
       <Config Output="false" Required="true" ParameterType="Microsoft.Build.Framework.ITaskItem" />
@@ -132,6 +136,7 @@ foreach (var item in filesToCleanup)
   <Target Name="CleanReferenceCopyLocalPaths" AfterTargets="AfterBuild;NonWinFodyTarget">
     <CosturaCleanup Config="FodyWeavers.xml" Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
+  <Import Project="..\packages\Fody.1.29.4\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
