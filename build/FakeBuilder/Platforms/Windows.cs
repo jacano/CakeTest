@@ -19,11 +19,13 @@ namespace FakeBuilder
 
                 InitCommon(csproj);
                 Clear();
-                NugetRestore(sln);
+                //NugetRestore(sln);
                 BuildProject(csproj);
                 GenerateArtifacts();
                 UploadToTeamCity();
             }));
+
+            //dependency("Build", "Clean");
         }
 
         private void NugetRestore(string sln)
@@ -44,6 +46,7 @@ namespace FakeBuilder
                 msBuild.Properties = (new[] {new Tuple<string, string>("OutputPath", this.projectOutput)}).ToFSharpList();
                 return msBuild;
             }), csproj);
+
         }
     }
 }

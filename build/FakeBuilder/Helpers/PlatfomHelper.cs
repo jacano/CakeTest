@@ -47,12 +47,19 @@ namespace FakeBuilder
         public static Type GetPlatformType(string platformName)
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
-            var platform = PlatfomHelper.FindTypes(new[] { executingAssembly },
+            var platform = FindTypes(new[] { executingAssembly },
                 type =>
                     string.Equals(type.Name, platformName, StringComparison.InvariantCultureIgnoreCase) &&
                     type.IsSubclassOf(typeof(PlatformBase)))
                     .FirstOrDefault();
+
             return platform;
+        }
+
+        public static PlatformBase GetPlatformInstance(Type type)
+        {
+            var platformInstance = (PlatformBase)Activator.CreateInstance(type);
+            return platformInstance;
         }
     }
 }

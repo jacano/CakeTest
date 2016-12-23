@@ -23,8 +23,7 @@ namespace FakeBuilder
                 Console.WriteLine($"{platformName} was not found.");
                 return;
             }
-
-            var currentPlatform = (PlatformBase)Activator.CreateInstance(platformType);
+            var currentPlatform = PlatfomHelper.GetPlatformInstance(platformType);
             currentPlatform.Run(targetName);
 
             Console.WriteLine();
