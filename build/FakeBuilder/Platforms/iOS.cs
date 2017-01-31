@@ -1,5 +1,4 @@
-﻿
-using Fake;
+﻿using Fake;
 using FSharpx;
 using System;
 

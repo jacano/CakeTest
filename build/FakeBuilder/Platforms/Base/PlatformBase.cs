@@ -7,6 +7,7 @@ using System.Reflection;
 using static Fake.EnvironmentHelper;
 using static Fake.TeamCityHelper;
 using static Fake.ZipHelper;
+using static Fake.RestorePackageHelper;
 using Fake;
 
 namespace FakeBuilder
@@ -18,20 +19,29 @@ namespace FakeBuilder
 
         public string buildName;
         public string buildVersion;
-        public string projectName;
-        public string projectOutput;
+        public string solutionName;
+        public string solutionOutput;
 
         public static Microsoft.FSharp.Core.FSharpFunc<TParams, TParams> Fun<TParams>(Func<TParams, TParams> func) => FSharpx.FSharpFunc.FromFunc(func);
 
-        public virtual void InitCommon(string csproj)
+        public virtual void InitCommon(string sln)
         {
             this.buildName = environVarOrNone("VersionName").ValueOrDefault("1.0");
             this.buildVersion = TeamCityBuildNumber.ValueOrDefault("1");
 
-            this.projectName = Path.GetFileNameWithoutExtension(csproj);
-
-            this.projectOutput = Path.Combine(Path.GetFullPath(OutputFolder), projectName + "_" + this.buildVersion) + "/";
+            this.solutionName = Path.GetFileNameWithoutExtension(sln);
+            this.solutionOutput = Path.Combine(Path.GetFullPath(OutputFolder), solutionName + "_" + this.buildVersion) + "/";
         }
+
+        public virtual void Nuget3Restore(Func<RestorePackageParams, RestorePackageParams> setParams, string sln)
+        {
+            var parameters = setParams(RestorePackageDefaults);
+            var sources = buildSources(parameters.Sources);
+
+            var args = "\"restore\" \"" + sln + "\"" + sources;
+            runNuGetTrial(parameters.Retries, parameters.ToolPath, parameters.TimeOut, args, Fun<Unit>((o) => { throw new Exception($"Package restore of {sln} failed"); }));
+        }
+
 
         public virtual void UploadToTeamCity()
         {
@@ -55,7 +65,7 @@ namespace FakeBuilder
 
         public virtual void GenerateArtifacts()
         {
-            var artifactOutput = Path.Combine(Path.GetFullPath(ArtifactsFolder), projectName + "_" + this.buildVersion) + "/";
+            var artifactOutput = Path.Combine(Path.GetFullPath(ArtifactsFolder), solutionName + "_" + this.buildVersion) + "/";
 
             if (!Directory.Exists(ArtifactsFolder))
             {
@@ -67,7 +77,7 @@ namespace FakeBuilder
                 Directory.Delete(artifactOutput, true);
             }
 
-            Directory.Move(this.projectOutput, artifactOutput);
+            Directory.Move(this.solutionOutput, artifactOutput);
         }
 
         public virtual void Clear()
