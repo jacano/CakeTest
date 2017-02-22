@@ -51,7 +51,7 @@ namespace FakeBuilder
                 {
                     new Tuple<string, string>("OutputPath", this.solutionOutput),
                     new Tuple<string, string>("Configuration", configuration),
-                    new Tuple<string, string>("Platfom", platform),
+                    new Tuple<string, string>("Platform", platform),
                 }).ToFSharpList();
                 return msBuild;
             }), sln);
