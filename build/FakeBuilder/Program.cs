@@ -8,7 +8,7 @@ namespace FakeBuilder
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length < 2)
             {
                 Console.WriteLine($"Usage: FakeBuilder [platform] [target]");
                 return;
@@ -23,7 +23,7 @@ namespace FakeBuilder
                 Console.WriteLine($"{platformName} was not found.");
                 return;
             }
-            var currentPlatform = PlatfomHelper.GetPlatformInstance(platformType);
+            var currentPlatform = PlatfomHelper.GetPlatformInstance(platformType, args);
             currentPlatform.Run(targetName);
 
             Console.WriteLine();

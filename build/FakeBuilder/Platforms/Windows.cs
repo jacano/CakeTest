@@ -1,60 +1,108 @@
 ﻿using FSharpx;
+using System;
+using System.Linq;
+
 using static Fake.RestorePackageHelper;
 using static Fake.TargetHelper;
 using static Fake.MSBuildHelper;
+using static Fake.VSTest;
 using System.IO;
-using System;
+using System.Collections;
+using FSharpx.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using FakeBuilder.Helpers;
 
 namespace FakeBuilder
 {
     public class Windows : PlatformBase
     {
+        protected string platform;
+        protected string fileVersion;
+
         public Windows()
         {
-            var sln = $"src/WaveCity3D/WaveCity3D_Windows.sln";
-            var configuration = "Release";
-            var platform = "x86";
-
-            Target("ci", FSharpFunc.FromAction(() => 
+            Target("setup", FSharpFunc.FromAction(() =>
             {
-                InitCommon(sln);
                 Clear();
-                NugetRestore(sln);
-                BuildProject(sln, configuration, platform);
+                GitLfs(this.Args);
+                NugetRestore(ConfigHelper.Instance.SlnPath);
             }));
 
-            Target("cd", FSharpFunc.FromAction(() =>
+            Target("build", FSharpFunc.FromAction(() =>
             {
-                InitCommon(sln);
-                Clear();
-                NugetRestore(sln);
-                BuildProject(sln, configuration, platform);
+                AddDirective(this.Args);
+                BuildProject(ConfigHelper.Instance.SlnPath, this.configuration, this.platform);
+            }));
+
+            Target("buildcsproj", FSharpFunc.FromAction(() =>
+            {
+                AddDirective(this.Args);
+                BuildProject(ConfigHelper.Instance.CsprojPath, this.configuration, this.platform);
+            }));
+
+            Target("test", FSharpFunc.FromAction(() =>
+            {
+                RunTest();
+            }));
+
+            Target("upload", FSharpFunc.FromAction(() =>
+            {
                 GenerateArtifacts();
-                UploadToTeamCity();
+                ZipAndUploadToTeamCity();
             }));
 
             //dependency("Build", "Clean");
         }
 
-        private void NugetRestore(string sln)
+        protected void NugetRestore(string sln)
         {
             Nuget3Restore(nrParams => { return nrParams; }, sln);
         }
 
-        private void BuildProject(string sln, string configuration, string platform)
+        protected void BuildProject(string sln, string configuration, string platform)
         {
+            //Updates version before compiling
+            this.UpdateAssemblyVersion();
             MSBuildLoggers = (new string[] { }).ToFSharpList();
-            build(Fun<MSBuildParams>(msBuild => {
+            build(Fun<MSBuildParams>(msBuild =>
+            {
                 msBuild.Verbosity = MSBuildVerbosity.Detailed.ToFSharpOption();
                 msBuild.NoLogo = true;
-                msBuild.Properties = (new[] 
-                {
-                    new Tuple<string, string>("OutputPath", this.solutionOutput),
-                    new Tuple<string, string>("Configuration", configuration),
-                    new Tuple<string, string>("Platform", platform),
-                }).ToFSharpList();
+                msBuild.Properties = this.propperties.ToArray().ToFSharpList();
                 return msBuild;
             }), sln);
+        }
+
+        protected void UpdateAssemblyVersion()
+        {
+            var pathToProject = Path.GetDirectoryName(ConfigHelper.Instance.CsprojPath);
+            var pathToAssembly = Path.GetFullPath($"{pathToProject}/Properties/AssemblyInfo.cs");
+            string text = File.ReadAllText(pathToAssembly);
+            text = Regex.Replace(text, "AssemblyFileVersion\\(\"(.*)\"\\)", $"AssemblyFileVersion(\"{this.fileVersion}\")");
+            File.WriteAllText(pathToAssembly, text);
+        }
+
+        public override void InitCommon()
+        {
+            base.InitCommon();
+            this.configuration = "Release";
+            this.platform = "x64";
+            this.fileVersion = $"{ConfigHelper.Instance.MajorVersion}.{ConfigHelper.Instance.MinorVersion}.{buildVersion}";
+
+            this.propperties.Add(new Tuple<string, string>("Configuration", configuration));
+            this.propperties.Add(new Tuple<string, string>("Platform", platform));
+        }
+
+        public override void RunTest()
+        {
+            VSTestParams param = new VSTestParams() { SettingsPath = $"{this.solutionOutput}/{ConfigHelper.Instance.TestProjectName}.runsettings" };
+            var testsAssemblies = Directory.GetFiles(this.solutionOutput, "*Tests.dll");
+            VSTest(Fun<VSTestParams>(vtest =>
+            {
+                vtest.SettingsPath = $"{this.solutionOutput}/{ConfigHelper.Instance.TestProjectName}.runsettings";
+                return vtest;
+            }), testsAssemblies);
         }
     }
 }

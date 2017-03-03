@@ -1,0 +1,31 @@
+Run all build commands from this dir
+
+*****************
+WINDOWS
+*****************
+SETUP
+FakeBuilder.exe Windows setup
+FakeBuilder.exe Windows setup USR PASS REPOSITORYURL
+
+BUILD
+FakeBuilder.exe Windows build
+FakeBuilder.exe Windows buildcsproj "DIRECTIVE1 DIRECTIVE2 ...."
+
+TEST
+FakeBuilder.exe Windows test
+
+UPLOAD
+FakeBuilder.exe Windows upload
+
+*****************
+WINDOWS INSTALLER Advanced installer
+*****************
+INSTALLER
+FakeBuilder.exe WindowsInstaller new Full
+FakeBuilder.exe WindowsInstaller new Users
+FakeBuilder.exe WindowsInstaller uploadInstaller
+
+*************
+NOTE
+*************
+All parameters are in parameters.json
