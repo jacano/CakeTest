@@ -1,10 +1,13 @@
 ﻿using FakeBuilder.Helpers;
 using Microsoft.FSharp.Core;
+using RunProcessAsTask;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace FakeBuilder
 {
@@ -56,10 +59,26 @@ namespace FakeBuilder
             return platform;
         }
 
-        public static PlatformBase GetPlatformInstance(Type type)
+        public static PlatformBase GetPlatformInstance(Type type, IEnumerable<string> args)
         {
             var platformInstance = (PlatformBase)Activator.CreateInstance(type);
+            platformInstance.Args = args.Skip(2);
             return platformInstance;
+        }
+
+        public static async Task<int> Execute(string command, string arguments)
+        {
+            Console.WriteLine($"{command} {arguments}");
+            ProcessStartInfo p = new ProcessStartInfo(command)
+            {
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+            };
+
+            var process = await ProcessEx.RunAsync(p);
+            var output = process.StandardOutput;
+            Console.WriteLine(string.Join("\n", output));
+            return process.ExitCode;
         }
     }
 }
